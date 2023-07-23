@@ -1,18 +1,24 @@
 package kitchenpos;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.Product;
 
 public class Fixture {
 
     public static Menu makeMenu() {
         Menu sampleMenu = new Menu();
 
+        sampleMenu.setId(1L);
         sampleMenu.setName("sample_Menu");
         sampleMenu.setName("sample_name");
         sampleMenu.setPrice(new BigDecimal(1));
@@ -52,5 +58,74 @@ public class Fixture {
         menuProduct.setQuantity(1);
 
         return menuProduct;
+    }
+
+    public static Product makeProduct() {
+
+        Product product = new Product();
+
+        product.setId(1L);
+        product.setName("test");
+        product.setPrice(new BigDecimal(10000));
+
+        return product;
+    }
+
+    public static List<Menu> makeMenuList() {
+        List<Menu> list = new ArrayList<>();
+
+        Menu menu1 = makeMenu();
+        Menu menu2 = makeMenu();
+
+        list.add(menu1);
+        list.add(menu2);
+
+        return list;
+    }
+
+    public static Order makeOrder() {
+        Order order = new Order();
+
+        order.setId(1L);
+        order.setOrderTableId(1L);
+        order.setOrderStatus("ORDER");
+        order.setOrderedTime(LocalDateTime.now());
+        order.setOrderLineItems(makeOrderLineItemList());
+
+        return order;
+    }
+
+    public static OrderLineItem makeOrderLineItem(Long sampleSeq) {
+        OrderLineItem orderLineItem = new OrderLineItem();
+
+        orderLineItem.setSeq(sampleSeq);
+        orderLineItem.setOrderId(sampleSeq);
+        orderLineItem.setMenuId(sampleSeq);
+        orderLineItem.setQuantity(1);
+
+        return orderLineItem;
+    }
+
+    public static List<OrderLineItem> makeOrderLineItemList() {
+        List<OrderLineItem> lineItems = new ArrayList<>();
+
+        OrderLineItem orderLineItem1 = makeOrderLineItem(1L);
+        OrderLineItem orderLineItem2 = makeOrderLineItem(2L);
+
+        lineItems.add(orderLineItem1);
+        lineItems.add(orderLineItem2);
+
+        return lineItems;
+    }
+
+    public static OrderTable makeOrderTable() {
+        OrderTable orderTable = new OrderTable();
+
+        orderTable.setId(1L);
+        orderTable.setTableGroupId(1L);
+        orderTable.setNumberOfGuests(1);
+        orderTable.setEmpty(false);
+
+        return orderTable;
     }
 }
