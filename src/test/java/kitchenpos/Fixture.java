@@ -95,6 +95,18 @@ public class Fixture {
         return order;
     }
 
+    public static List<Order> makeOrderList() {
+        List<Order> orderList = new ArrayList<>();
+
+        Order order1 = makeOrder();
+        Order order2 = makeOrder();
+
+        orderList.add(order1);
+        orderList.add(order2);
+
+        return orderList;
+    }
+
     public static OrderLineItem makeOrderLineItem(Long sampleSeq) {
         OrderLineItem orderLineItem = new OrderLineItem();
 

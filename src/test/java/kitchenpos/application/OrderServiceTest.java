@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,6 +24,7 @@ import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 
 @ExtendWith(MockitoExtension.class)
@@ -77,8 +79,9 @@ class OrderServiceTest {
         assertAll(
             () -> assertThatThrownBy(() -> orderService.create(notExistOrder))
                 .isExactlyInstanceOf(IllegalArgumentException.class),
-            () -> assertThatThrownBy(() -> orderService.create(oneOrderLineItem))
-                .isExactlyInstanceOf(IllegalArgumentException.class)
+            () -> verify(orderTableDao).findById(order.getId()),
+            () -> verify(orderDao).save(order),
+            () -> verify(orderLineItemDao, times(2)).save(any())
         );
     }
 
@@ -86,12 +89,47 @@ class OrderServiceTest {
     @Test
     void listTest() {
 
+        List<Order> orders = new ArrayList<>();
+        Order order1 = makeOrder();
+        Order order2 = makeOrder();
+
+        orders.add(order1);
+        orders.add(order2);
+
+        given(orderDao.findAll())
+            .willReturn(Arrays.asList(order1, order2));
+
+        // when
+        orderService.list();
+
+        assertThat(orders).containsExactly(order1, order2);
     }
 
     @DisplayName("주문 정보 상태가 변경되는지 확인하는 테스트")
     @Test
     void changeOrderStatusTest() {
+        final Long orderId = 1L;
+        final Order order = makeOrder();
+        order.setOrderStatus(OrderStatus.MEAL.name());
 
+        final Long notExistOrderId = 3L;
+        final Order notExistOrder = new Order();
+        notExistOrder.setId(notExistOrderId);
+        notExistOrder.setOrderStatus(OrderStatus.COMPLETION.name());
+
+
+        given(orderDao.findById(1L))
+            .willReturn(Optional.of(order));
+        given(orderDao.save(any(Order.class)))
+            .willReturn(order);
+
+        // when
+        orderService.changeOrderStatus(orderId, order);
+
+        assertAll(
+            () -> assertThatThrownBy(() -> orderService.changeOrderStatus(notExistOrderId, notExistOrder))
+                .isExactlyInstanceOf(IllegalArgumentException.class),
+            () -> verify(orderLineItemDao).findAllByOrderId(orderId)
+        );
     }
-
 }
