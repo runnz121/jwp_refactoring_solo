@@ -192,9 +192,20 @@ class TableServiceTest {
         @DisplayName("저장된 테이블이 비어있다면")
         class EmptySavedOrderTable {
 
+            final Long givenOrderTableId = 1L;
+            final OrderTable givenOrderTable = new OrderTable();
+
+            @BeforeEach
+            void setUp() {
+                givenOrderTable.setEmpty(true);
+            }
 
             @Test
-            @DisplayName("")
+            @DisplayName("예외를 발생한다")
+            void tableEmpty() {
+                assertThatThrownBy(() -> tableService.changeNumberOfGuests(givenOrderTableId, givenOrderTable))
+                    .isInstanceOf(IllegalArgumentException.class);
+            }
         }
     }
 }
