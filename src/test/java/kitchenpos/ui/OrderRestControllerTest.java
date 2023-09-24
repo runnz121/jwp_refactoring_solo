@@ -1,12 +1,9 @@
 package kitchenpos.ui;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,15 +17,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import net.bytebuddy.description.NamedElement;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.application.MenuService;
 import kitchenpos.application.OrderService;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
 
 @WebMvcTest(OrderRestController.class)
 @DisplayName("OrderRestControllerTest")
@@ -80,11 +74,57 @@ class OrderRestControllerTest {
     @DisplayName("GET /api/orders")
     class GetOrders {
 
+        List<Order> givenOrders;
+
+        @BeforeEach
+        void setUp() {
+            Order order = new Order();
+            givenOrders = Collections.singletonList(order);
+            when(orderService.list())
+                .thenReturn(givenOrders);
+        }
+
+        @DisplayName("200 과 메뉴 목록을 응답")
+        @Test
+        void responseWithOrders() throws Exception {
+            mockMvc.perform(get("/api/orders"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                    objectMapper.writeValueAsString(givenOrders)
+                ));
+        }
+
     }
 
     @Nested
     @DisplayName("PUT /api/orders/{orderId}/order-status")
     class GetOrder {
 
+        @Nested
+        @DisplayName("갱신할 주문과 주문 정보가 주어지는 경우")
+        class changeOrderStatus {
+            Long givenOrderId = 1L;
+            Order givenOrder = new Order();
+
+            @BeforeEach
+            void setUp() {
+                givenOrder.setOrderStatus(OrderStatus.COOKING.name());
+
+                when(orderService.changeOrderStatus(anyLong(), any(Order.class)))
+                    .thenReturn(givenOrder);
+            }
+
+            @DisplayName("200 Ok와 상태 갱신된 주문 정보를 응답한다.")
+            @Test
+            void responseAndUpdateOrder() throws Exception{
+                mockMvc.perform(put("/api/orders/{orderId}/order-status", givenOrder)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .content(objectMapper.writeValueAsString(givenOrder)))
+                    .andExpect(status().isOk())
+                    .andExpect(content().string(
+                        objectMapper.writeValueAsString(givenOrder)
+                    ));
+            }
+        }
     }
 }
