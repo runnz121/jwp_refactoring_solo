@@ -18,9 +18,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.application.TableGroupService;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.order.service.TableGroupService;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.TableGroup;
+import kitchenpos.order.ui.TableGroupRestController;
 
 @WebMvcTest(TableGroupRestController.class)
 @DisplayName("TableGroupRestControllerTest")

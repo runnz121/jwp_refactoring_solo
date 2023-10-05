@@ -20,9 +20,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.application.MenuService;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.service.MenuService;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.ui.MenuRestController;
 
 @WebMvcTest(MenuRestController.class)
 @DisplayName("MenuRestControllerTest")

@@ -16,12 +16,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.order.repository.OrderDao;
+import kitchenpos.order.repository.OrderTableDao;
+import kitchenpos.order.repository.TableGroupDao;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.TableGroup;
+import kitchenpos.order.service.TableGroupService;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {

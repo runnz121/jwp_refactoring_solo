@@ -19,8 +19,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.application.ProductService;
-import kitchenpos.domain.Product;
+import kitchenpos.product.service.ProductService;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.ui.ProductRestController;
 
 @WebMvcTest(ProductRestController.class)
 @DisplayName("ProductRestControllerTest")
